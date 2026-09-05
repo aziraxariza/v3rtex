@@ -1,0 +1,25 @@
+# Replit / AI development files
+.replit
+.replit*
+.replit-artifact/
+.local/
+.conversation/
+.agents/
+.agent/
+replit.md
+replit.nix
+
+# Generated
+*.tsbuildinfo
+
+# Dependencies
+node_modules/
+dist/
+build/
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key

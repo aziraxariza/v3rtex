@@ -1,0 +1,109 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: ai
+    description: AI study assistant operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /ai/chat:
+    post:
+      operationId: sendAiChat
+      tags: [ai]
+      summary: Ask the DSA study assistant
+      description: Returns a hint, explanation, or review response from the configured AI provider.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AiChatInput"
+      responses:
+        "200":
+          description: Assistant response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiChatResponse"
+        "400":
+          description: Invalid assistant request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Assistant unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    AiChatInput:
+      type: object
+      properties:
+        message:
+          type: string
+          minLength: 1
+          maxLength: 5000
+        problemTitle:
+          type: ["string", "null"]
+        problemTopic:
+          type: ["string", "null"]
+        hintLevel:
+          type: number
+          minimum: 0
+          maximum: 3
+        code:
+          type: ["string", "null"]
+      required:
+        - message
+        - hintLevel
+    AiChatResponse:
+      type: object
+      properties:
+        reply:
+          type: string
+        provider:
+          type: string
+        hintLevel:
+          type: number
+      required:
+        - reply
+        - provider
+        - hintLevel
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
